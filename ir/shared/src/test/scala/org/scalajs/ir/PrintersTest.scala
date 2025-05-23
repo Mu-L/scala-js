@@ -514,6 +514,11 @@ class PrintersTest {
     assertPrintEquals("<wrapAsThrowable>(e)", UnaryOp(WrapAsThrowable, ref("e", AnyType)))
     assertPrintEquals("<unwrapFromThrowable>(e)",
         UnaryOp(UnwrapFromThrowable, ref("e", ClassType(ThrowableClass, nullable = true))))
+
+    assertPrintEquals("<floatToBits>(x)", UnaryOp(Float_toBits, ref("x", FloatType)))
+    assertPrintEquals("<floatFromBits>(x)", UnaryOp(Float_fromBits, ref("x", IntType)))
+    assertPrintEquals("<doubleToBits>(x)", UnaryOp(Double_toBits, ref("x", DoubleType)))
+    assertPrintEquals("<doubleFromBits>(x)", UnaryOp(Double_fromBits, ref("x", LongType)))
   }
 
   @Test def printPseudoUnaryOp(): Unit = {
@@ -666,6 +671,15 @@ class PrintersTest {
         BinaryOp(Class_isAssignableFrom, classVarRef, ref("y", ClassType(ClassClass, nullable = false))))
     assertPrintEquals("cast(x, y)", BinaryOp(Class_cast, classVarRef, ref("y", AnyType)))
     assertPrintEquals("newArray(x, y)", BinaryOp(Class_newArray, classVarRef, ref("y", IntType)))
+
+    assertPrintEquals("(x unsigned_/[int] y)",
+        BinaryOp(Int_unsigned_/, ref("x", IntType), ref("y", IntType)))
+    assertPrintEquals("(x unsigned_%[int] y)",
+        BinaryOp(Int_unsigned_%, ref("x", IntType), ref("y", IntType)))
+    assertPrintEquals("(x unsigned_/[long] y)",
+        BinaryOp(Long_unsigned_/, ref("x", LongType), ref("y", LongType)))
+    assertPrintEquals("(x unsigned_%[long] y)",
+        BinaryOp(Long_unsigned_%, ref("x", LongType), ref("y", LongType)))
   }
 
   @Test def printNewArray(): Unit = {

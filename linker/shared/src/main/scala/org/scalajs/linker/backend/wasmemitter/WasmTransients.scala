@@ -62,11 +62,6 @@ object WasmTransients {
       case F64Floor   => wa.F64Floor
       case F64Nearest => wa.F64Nearest
       case F64Sqrt    => wa.F64Sqrt
-
-      case I32ReinterpretF32 => wa.I32ReinterpretF32
-      case I64ReinterpretF64 => wa.I64ReinterpretF64
-      case F32ReinterpretI32 => wa.F32ReinterpretI32
-      case F64ReinterpretI64 => wa.F64ReinterpretI64
     }
 
     def printIR(out: IRTreePrinter): Unit = {
@@ -96,22 +91,17 @@ object WasmTransients {
     final val F64Nearest = 11
     final val F64Sqrt = 12
 
-    final val I32ReinterpretF32 = 13
-    final val I64ReinterpretF64 = 14
-    final val F32ReinterpretI32 = 15
-    final val F64ReinterpretI64 = 16
-
     def resultTypeOf(op: Code): Type = (op: @switch) match {
-      case I32Clz | I32Ctz | I32Popcnt | I32ReinterpretF32 =>
+      case I32Clz | I32Ctz | I32Popcnt =>
         IntType
 
-      case I64Clz | I64Ctz | I64Popcnt | I64ReinterpretF64 =>
+      case I64Clz | I64Ctz | I64Popcnt =>
         LongType
 
-      case F32Abs | F32ReinterpretI32 =>
+      case F32Abs =>
         FloatType
 
-      case F64Abs | F64Ceil | F64Floor | F64Nearest | F64Sqrt | F64ReinterpretI64 =>
+      case F64Abs | F64Ceil | F64Floor | F64Nearest | F64Sqrt =>
         DoubleType
     }
   }
@@ -147,13 +137,9 @@ object WasmTransients {
     def wasmInstr: wa.SimpleInstr = (op: @switch) match {
       case I32GtU => wa.I32GtU
 
-      case I32DivU => wa.I32DivU
-      case I32RemU => wa.I32RemU
       case I32Rotl => wa.I32Rotl
       case I32Rotr => wa.I32Rotr
 
-      case I64DivU => wa.I64DivU
-      case I64RemU => wa.I64RemU
       case I64Rotl => wa.I64Rotl
       case I64Rotr => wa.I64Rotr
 
@@ -177,13 +163,9 @@ object WasmTransients {
 
     final val I32GtU = 1
 
-    final val I32DivU = 2
-    final val I32RemU = 3
     final val I32Rotl = 4
     final val I32Rotr = 5
 
-    final val I64DivU = 6
-    final val I64RemU = 7
     final val I64Rotl = 8
     final val I64Rotr = 9
 
@@ -197,10 +179,10 @@ object WasmTransients {
       case I32GtU =>
         BooleanType
 
-      case I32DivU | I32RemU | I32Rotl | I32Rotr =>
+      case I32Rotl | I32Rotr =>
         IntType
 
-      case I64DivU | I64RemU | I64Rotl | I64Rotr =>
+      case I64Rotl | I64Rotr =>
         LongType
 
       case F32Min | F32Max =>

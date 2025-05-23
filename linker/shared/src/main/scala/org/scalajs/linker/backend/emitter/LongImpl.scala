@@ -47,6 +47,9 @@ private[linker] object LongImpl {
   final val / = binaryOp("$div")
   final val % = binaryOp("$percent")
 
+  final val divideUnsigned = binaryOp("divideUnsigned")
+  final val remainderUnsigned = binaryOp("remainderUnsigned")
+
   final val | = binaryOp("$bar")
   final val & = binaryOp("$amp")
   final val ^ = binaryOp("$up")
@@ -62,9 +65,10 @@ private[linker] object LongImpl {
   final val >   = compareOp("$greater")
   final val >=  = compareOp("$greater$eq")
 
-  final val toInt    = MethodName("toInt", Nil, IntRef)
-  final val toFloat  = MethodName("toFloat", Nil, FloatRef)
+  final val toInt = MethodName("toInt", Nil, IntRef)
+  final val toFloat = MethodName("toFloat", Nil, FloatRef)
   final val toDouble = MethodName("toDouble", Nil, DoubleRef)
+  final val bitsToDouble = MethodName("bitsToDouble", List(ObjectRef), DoubleRef)
 
   final val byteValue   = MethodName("byteValue", Nil, ByteRef)
   final val shortValue  = MethodName("shortValue", Nil, ShortRef)
@@ -80,8 +84,8 @@ private[linker] object LongImpl {
   final val compareToO = MethodName("compareTo", List(ClassRef(ObjectClass)), IntRef)
 
   private val OperatorMethods = Set(
-      UNARY_-, UNARY_~, this.+, this.-, *, /, %, |, &, ^, <<, >>>, >>,
-      ===, !==, <, <=, >, >=, toInt, toFloat, toDouble)
+      UNARY_-, UNARY_~, this.+, this.-, *, /, %, divideUnsigned, remainderUnsigned,
+      |, &, ^, <<, >>>, >>, ===, !==, <, <=, >, >=, toInt, toFloat, toDouble, bitsToDouble)
 
   private val BoxedLongMethods = Set(
       byteValue, shortValue, intValue, longValue, floatValue, doubleValue,
@@ -91,12 +95,10 @@ private[linker] object LongImpl {
 
   // Methods used for intrinsics
 
-  final val compareToRTLong   = MethodName("compareTo", List(RTLongRef), IntRef)
-  final val divideUnsigned    = binaryOp("divideUnsigned")
-  final val remainderUnsigned = binaryOp("remainderUnsigned")
+  final val compareToRTLong = MethodName("compareTo", List(RTLongRef), IntRef)
 
   val AllIntrinsicMethods = Set(
-      compareToRTLong, divideUnsigned, remainderUnsigned)
+      compareToRTLong)
 
   // Constructors
 
@@ -107,11 +109,19 @@ private[linker] object LongImpl {
 
   // Methods on the companion
 
-  final val fromInt    = MethodName("fromInt", List(IntRef), RTLongRef)
+  final val fromInt = MethodName("fromInt", List(IntRef), RTLongRef)
   final val fromDouble = MethodName("fromDouble", List(DoubleRef), RTLongRef)
+  final val fromDoubleBits = MethodName("fromDoubleBits", List(DoubleRef, ObjectRef), RTLongRef)
 
   val AllModuleMethods = Set(
-      fromInt, fromDouble)
+      fromInt, fromDouble, fromDoubleBits)
+
+  // Methods on the companion used for intrinsics
+
+  final val multiplyFull = MethodName("multiplyFull", List(IntRef, IntRef), RTLongRef)
+
+  val AllIntrinsicModuleMethods = Set(
+      multiplyFull)
 
   // Extract the parts to give to the initFromParts constructor
 
